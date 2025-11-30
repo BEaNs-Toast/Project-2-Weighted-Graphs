@@ -131,6 +131,7 @@ public class Graph {
                 }
             }
             min = INF;
+            next = -1;
 
         } while (nodeVisited.contains(false));
         
