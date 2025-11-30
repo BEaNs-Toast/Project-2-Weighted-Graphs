@@ -5,6 +5,15 @@ import java.util.Map;
 import java.util.Random;
 
 public class Graph {
+    public static class DijkstraPair{
+    List<Integer> cost;
+    List<Integer> prev;
+
+    public DijkstraPair(List<Integer> a,List<Integer> b){
+        this.cost = a;
+        this.prev = b;
+    }
+    }
 
         public static class Edge {
         int to;
@@ -64,12 +73,68 @@ public class Graph {
         }
         return false;
     }
+    private static int getWeight(Map<Integer, List<Edge>> graph, int u, int v){
+        for (Edge e : graph.get(u)) {
+            if (e.to == v) return e.weight;
+        }
+        return Integer.MAX_VALUE;
+    }
 
     public static void printGraph(Map<Integer, List<Edge>> graph) {
         for (int node : graph.keySet()) {
             System.out.print(node + " -> ");
             System.out.println(graph.get(node));
         }
+    }
+    public static DijkstraPair Dijkstraway(Map<Integer, List<Edge>> graph, int start){
+        int n = graph.size();
+        int INF = Integer.MAX_VALUE;
+        List<Integer> prev = new ArrayList<>();
+        List<Integer> cost = new ArrayList<>();
+        List<Boolean> nodeVisited = new ArrayList<>();
+        for (int node = 0; node < n; node++){
+            if (node == start){
+                nodeVisited.add(true);
+                cost.add(0); 
+            }
+            else{
+                nodeVisited.add(false);
+                if(hasEdge(graph,start,node)){
+                    cost.add(getWeight(graph,start,node));
+                }
+                else{
+                    cost.add(INF);
+                }
+            }
+            prev.add(start);
+            
+        }
+        int min = INF;
+        int next = -1;
+        do { 
+            for(int i = 0; i < n; i++){
+                if (cost.get(i) < min && !nodeVisited.get(i)){
+                    min = cost.get(i);
+                    next = i;
+                }
+            }
+            if (next == -1){
+                break;
+            }
+            cost.set(next,min);
+            nodeVisited.set(next,true);
+            for (int i = 0; i < n; i++){
+                int replace = getWeight(graph,next,i) + min;
+                if(cost.get(i) > replace && hasEdge(graph,next,i) && !nodeVisited.get(i)){
+                    cost.set(i,replace);
+                    prev.set(i,next);
+                }
+            }
+            min = INF;
+
+        } while (nodeVisited.contains(false));
+        
+        return new DijkstraPair(cost,prev);
     }
 }
 
