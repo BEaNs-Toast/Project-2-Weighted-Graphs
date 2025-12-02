@@ -5,6 +5,15 @@ import java.util.Map;
 import java.util.Random;
 
 public class Graph {
+    public static class DijkstraPair{
+    List<Integer> cost; //added to atcually export Dijkstra Pairs out of eqution, given you can't export two lists at a time
+    List<Integer> prev;
+
+    public DijkstraPair(List<Integer> a,List<Integer> b){
+        this.cost = a;
+        this.prev = b;
+    }
+    }
 
         public static class Edge {
         int to;
@@ -64,12 +73,68 @@ public class Graph {
         }
         return false;
     }
+    private static int getWeight(Map<Integer, List<Edge>> graph, int u, int v){
+        for (Edge e : graph.get(u)) {
+            if (e.to == v) return e.weight; //Returns weight between nodes u and v (if there is an edge)
+        }
+        return Integer.MAX_VALUE;//Just makes sure the code doesn't bug out with no return value. 
+    }
 
     public static void printGraph(Map<Integer, List<Edge>> graph) {
         for (int node : graph.keySet()) {
             System.out.print(node + " -> ");
             System.out.println(graph.get(node));
         }
+    }
+    public static DijkstraPair Dijkstraway(Map<Integer, List<Edge>> graph, int start){
+        int n = graph.size();
+        int INF = Integer.MAX_VALUE;//Couldn't make it null because code explodes, can't make it negative because min would activate for every single INF.
+        List<Integer> prev = new ArrayList<>();
+        List<Integer> cost = new ArrayList<>();
+        List<Boolean> nodeVisited = new ArrayList<>(); //Checks what nodes have already been visited
+        for (int node = 0; node < n; node++){
+            if (node == start){ //Specifically for start Variable, its already visited at the start with zero weight.
+                nodeVisited.add(true);
+                cost.add(0); 
+            }
+            else{
+                nodeVisited.add(false);
+                if(hasEdge(graph,start,node)){
+                    cost.add(getWeight(graph,start,node));//adds weight to cost if there is an edge.
+                }
+                else{
+                    cost.add(INF);
+                }
+            }
+            prev.add(start);
+            
+        }
+        int min = INF; //min is to store lowest cost for comparisons
+        int next = -1;//next is to store vertex number we are going to
+        do { 
+            for(int i = 0; i < n; i++){
+                if (cost.get(i) < min && !nodeVisited.get(i)){
+                    min = cost.get(i);
+                    next = i;
+                }
+            }
+            if (next == -1){
+                break;//If a vertex does not connect to any symbol and no more can be visited, we end the code prematurly
+            }
+            nodeVisited.set(next,true);
+            for (int i = 0; i < n; i++){
+                int replace = getWeight(graph,next,i) + min;//New cost of connecting from node next to node i
+                if(cost.get(i) > replace && hasEdge(graph,next,i)){//makes sure of two things:Node next atcually has an edge with node i, and if the new cost "replace" is less that what the cost is currently (cost.get(i))
+                    cost.set(i,replace);
+                    prev.set(i,next);//replaces the prev, hopefully  
+                }
+            }
+            min = INF;//reseters for the next stage, else it will infinty loop
+            next = -1;
+
+        } while (nodeVisited.contains(false));
+        
+        return new DijkstraPair(cost,prev);
     }
 }
 
