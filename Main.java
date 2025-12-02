@@ -11,15 +11,36 @@ public class Main{
         Graph.printGraph(graph);
         for (int i = 0; i < 10; i++){
             Graph.DijkstraPair result = Graph.Dijkstraway(graph, i);
-            System.out.println("Starting from node " + i + ":\n_______________");
+            System.out.println("Starting from node " + i + ":\n");
+            System.out.print("|Node| ");
             for(int j = 0; j < 10; j++){
-                if(j != i){
-                    System.out.print("Node: " + j);
-                    int distance = result.cost.get(j);
-                    if (distance == Integer.MAX_VALUE){
-                        System.out.println("\n Distance: INF\n");
+                System.out.print(j+" | ");
+            }
+            System.out.print("\n|Cost");
+            for (int j = 0; j < 10; j++){
+                int distance = result.cost.get(j);
+                if (distance == Integer.MAX_VALUE){
+                    System.out.print("|INF");
+                }
+                else{
+                    if (distance/100 != 0){
+                        System.out.print("|" + distance);
                     }
-                    else{
+                    else if (distance/10 != 0){
+                        System.out.print("|" + distance+ " ");
+                    }
+                    else {
+                        System.out.print("| "+distance+" ");
+                    }
+                }
+            }
+            System.out.print("|\n|Prev| ");
+            for (int j = 0; j < 10; j++){
+                System.out.print(result.prev.get(j)+" | ");
+            }
+            System.out.println("\n");
+            
+              /*      This extra code is if you want to showcase each nodes path to the starting node
                         List<Integer> path = new java.util.ArrayList<>(); 
                         int node = j;
                         while (node != i) {
@@ -34,10 +55,10 @@ public class Main{
                                 System.out.print("->");
                             }
                         }
-                        System.out.println("\n Distance from " + i + " = " + distance);
                     }
                 }
-            }
+            }*/
+
         }
         
     }
