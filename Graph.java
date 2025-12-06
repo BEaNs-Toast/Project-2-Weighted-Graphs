@@ -136,5 +136,37 @@ public class Graph {
         
         return new DijkstraPair(cost,prev);
     }
+
+    //Floyd-Warshall Algorithm
+    public static int[][] floydWarshall(Map<Integer, List<Edge>> graph){
+        int n = graph.size();
+        int infinity = Integer.MAX_VALUE/2;
+        int D[][] = new int[n][n];
+
+        for(int u=0; u<n; u++){
+            for(int v=0; v<n; v++){
+                if (u==v){
+                    D[u][v] = 0;
+                } else{
+                    D[u][v] = infinity;
+                    }
+                }
+            }
+        //copy adjacency list edges into matrix
+        for (int u=0; u<n; u++) {
+            for (Edge e : graph.get(u)) {
+                D[u][e.to] = e.weight;
+            }
+        }
+
+        for(int k=0; k<n; k++){
+            for(int u=0; u<n; u++){
+                for(int v=0; v<n; v++){ 
+                    D[u][v] = Math.min(D[u][v], D[u][k] + D[k][v]);
+                }
+            }
+        }
+        return D;
+    }
 }
 

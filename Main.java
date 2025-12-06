@@ -60,6 +60,19 @@ public class Main{
             }*/
 
         }
-        
+        //print floyd Warshall
+
+        int[][] floyd = Graph.floydWarshall(graph);
+
+        System.out.println("Floyd–Warshall:");
+        for (int u=0; u < floyd.length; u++) {
+            for (int v=0; v < floyd.length; v++) {
+                if (floyd[u][v] >= Integer.MAX_VALUE / 3) {
+                    System.out.print("infinity ");
+                } else {
+                    System.out.print(floyd[u][v] + " ");
+                }
+            }
+        }
     }
 }
